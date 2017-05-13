@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Editor - Space Battle Simulator</title>
+    <link rel="stylesheet" type="text/css" href="../styles/bootstrap.min.css" media="all">
+    <link rel="stylesheet" type="text/css" href="../styles/editor.css" media="all">
+</head>
+<body>
+    <div id="container" class="row">
+		<div id="gui" class="col-3">
+			<div id="cameraView" class="row">
+				<label for="selectView">Select the camera angle</label>
+				<select id="selectView" class="form-control" >
+					<option selected disabled>Camera</option>
+					<option>Perspective</option>
+					<option>Top</option>
+					<option>Bottom</option>
+					<option>Left</option>
+					<option>Right</option>
+					<option>Front</option>
+					<option>Back</option>
+				</select>
+			</div>
+			<div id="meshSelection" class="row">
+				<label for="selectmenu">Select the mesh genre</label>
+				<select id="selectmenu" class="form-control" >
+					<option selected disabled>Camera</option>
+					<option>Perspective</option>
+					<option>Top</option>
+					<option>Bottom</option>
+					<option>Left</option>
+					<option>Right</option>
+					<option>Front</option>
+					<option>Back</option>
+				</select>
+			</div>
+		</div>
+		<div id="canvasContainer" class="col">
+			<canvas id="editorCanvas"></canvas>
+		</div>
+    </div>
+
+
+    <script language="JavaScript" src="../js/jquery/jquery.min.js"></script>
+    <script language="JavaScript" src="../js/bootstrap/tether.min.js"></script>
+    <script language="JavaScript" src="../js/bootstrap/bootstrap.min.js"></script>
+	
+    <script language="JavaScript" src="../js/threejs/three.min.js"></script>
+    <script language="JavaScript" src="../js/threejs/CombinedCamera.js"></script>
+    <script language="JavaScript" src="../js/threejs/OrbitControls.js"></script>
+    <script language="JavaScript" src="../js/threejs/ColladaLoader.js"></script>
+    <script language="JavaScript" src="../js/game/Editor.js"></script>
+    <script language="JavaScript" src="../js/game/MainGame.js"></script>
+	
+    <script language="JavaScript" src="../js/gui/GUIManager.editor.js"></script>
+</body>
+</html>

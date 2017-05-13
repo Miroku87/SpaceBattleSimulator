@@ -1,0 +1,36 @@
+{
+  "name": "space-battle-simulator",
+  "version": "1.0.0",
+  "description": "This project aims to be a builder a physically accurate simulator for space battles to play in LAN. Technology used are JavaScript and HTML",
+  "main": "index.html",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Miroku87/SpaceBattleSim.git"
+  },
+  "keywords": [
+    "space",
+    "battle",
+    "simulator",
+    "game"
+  ],
+  "author": "Andrea Silvestri",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/Miroku87/SpaceBattleSim/issues"
+  },
+  "homepage": "https://github.com/Miroku87/SpaceBattleSim#readme",
+  "devDependencies": {
+    "bootstrap": "^4.0.0-alpha.4",
+    "grunt": "^1.0.1",
+    "grunt-contrib-clean": "^1.1.0",
+    "grunt-contrib-connect": "^1.0.2",
+    "grunt-contrib-copy": "^1.0.0",
+    "grunt-contrib-watch": "^1.0.0",
+    "grunt-preprocess": "^5.1.0",
+    "matchdep": "^1.0.1",
+    "tether": "^1.4.0"
+  }
+}

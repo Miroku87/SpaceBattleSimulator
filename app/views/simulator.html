@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>Space Battle Simulator</title>
+    <link rel="stylesheet" type="text/css" href="styles/jquery-ui.min.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="styles/jquery-ui.structure.min.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="styles/jquery-ui.theme.min.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="styles/index.css" media="screen">
+</head>
+<body>
+    <div id="gui">
+        <div id="camera">
+            <select id="selectmenu">
+                <option selected disabled>Camera</option>
+                <option>Perspective</option>
+                <option>Top</option>
+                <option>Bottom</option>
+                <option>Left</option>
+                <option>Right</option>
+                <option>Front</option>
+                <option>Back</option>
+            </select>
+        </div>
+    </div>
+
+    <script language="JavaScript" src="js/threejs/three.min.js"></script>
+    <script language="JavaScript" src="js/threejs/CombinedCamera.js"></script>
+    <script language="JavaScript" src="js/threejs/OrbitControls.js"></script>
+    <script language="JavaScript" src="js/threejs/ColladaLoader.js"></script>
+    <script language="JavaScript" src="js/game/Environment.js"></script>
+    <script language="JavaScript" src="js/game/MainGame.js"></script>
+
+    <script language="JavaScript" src="js/jquery/jquery.min.js"></script>
+    <script language="JavaScript" src="js/jquery/jquery-ui.min.js"></script>
+    <script language="JavaScript" src="js/gui/GUIManager.js"></script>
+</body>
+</html>
