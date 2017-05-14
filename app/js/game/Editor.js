@@ -23,6 +23,7 @@ var Editor = (function()
         canvas_half_x       = -1,
         canvas_half_y       = -1,
         controls            = null,
+        transform_controls  = null,
         controlsOrtho       = null,
         controlsPersp       = null,
         currentView         = "perspective",
@@ -40,11 +41,11 @@ var Editor = (function()
 
         _this.createRenderer();
         _this.createScene();
+        _this.addGridHelper();
         _this.setupCamera();
         _this.addLights();
         _this.addDAE();
         _this.addListeners();
-        //_this.setControls(camera);
         _this.setOrthoControls();
         _this.setPerspControls();
 
@@ -69,8 +70,8 @@ var Editor = (function()
          } );
          dae.updateMatrix();*/
 
-        dae.scale.x = dae.scale.y = dae.scale.z = 50;
-        dae.rotateX(-90 * TO_RADIANS);
+        //dae.scale.x = dae.scale.y = dae.scale.z = 50;
+        //dae.rotateX(-90 * TO_RADIANS);
 
         objects.push(dae.children[0].children[0]);
         scene.add( dae );
@@ -90,7 +91,7 @@ var Editor = (function()
     {
         var loader = new THREE.ColladaLoader();
         loader.load(
-            '../assets/models/star_destroyer/my_stardestroyer_merged.dae',
+            '/assets/models/star_destroyer/my_stardestroyer_merged.dae',
             //'./assets/models/cannons/star_destroyer_heavy_cannon.dae',
             _this.onLoadComplete,
             _this.onLoadProgress
@@ -119,24 +120,50 @@ var Editor = (function()
 
     Editor.prototype.setOrthoControls = function ( )
     {
-        controlsOrtho = new THREE.OrbitControls( cameraOrtho, renderer.domElement );
-        controlsOrtho.enableKeys = false;
+        controlsOrtho               = new THREE.OrbitControls( cameraOrtho, renderer.domElement );
+        controlsOrtho.enableKeys    = false;
         controlsOrtho.dampingFactor = 0.25;
-        controlsOrtho.enableZoom = true;
-        controlsOrtho.enableRotate = false;
+        controlsOrtho.enableZoom    = true;
+        controlsOrtho.enableRotate  = false;
         controlsOrtho.minDistance   = -1000;
 		controlsOrtho.mouseButtons  = { ORBIT: THREE.MOUSE.MIDDLE, ZOOM: null, PAN: THREE.MOUSE.RIGHT };
     };
 
     Editor.prototype.setPerspControls = function ( )
     {
-        controlsPersp = new THREE.OrbitControls( cameraPersp, renderer.domElement );
-        controlsPersp.enableKeys = false;
+        controlsPersp               = new THREE.OrbitControls( cameraPersp, renderer.domElement );
+        controlsPersp.enableKeys    = false;
         controlsPersp.dampingFactor = 0.25;
-        controlsPersp.enableZoom = true;
-        controlsPersp.enableRotate = true;
+        controlsPersp.enableZoom    = true;
+        controlsPersp.enableRotate  = true;
         controlsPersp.minDistance   = -1000;
 		controlsPersp.mouseButtons  = { ORBIT: THREE.MOUSE.MIDDLE, ZOOM: null, PAN: THREE.MOUSE.RIGHT };
+    };
+
+    Editor.prototype.setTransformControls = function ( actual_camera )
+    {
+		if( transform_controls ) 
+		{
+			transform_controls.dispose();
+			scene.remove( transform_controls );
+		}
+		
+		transform_controls = new THREE.TransformControls( actual_camera, renderer.domElement );
+		scene.add( transform_controls );
+		
+		if( currentSelection ) transform_controls.attach( currentSelection );
+    };
+
+    Editor.prototype.setOrbitTarget = function ( )
+    {
+        if(controlsOrtho && currentSelection) controlsOrtho.target = currentSelection.parent.position;
+        if(controlsPersp && currentSelection) controlsPersp.target = currentSelection.parent.position;
+    };
+
+    Editor.prototype.removeOrbitTarget = function ( )
+    {
+        if(controlsOrtho) controlsOrtho.target = new THREE.Vector3();
+        if(controlsPersp) controlsPersp.target = new THREE.Vector3();
     };
 
     Editor.prototype.createScene = function ( )
@@ -148,9 +175,8 @@ var Editor = (function()
     {
         var view = _view || currentView;
         currentView = view;
-
-        if(controlsOrtho && currentSelection) controlsOrtho.target = currentSelection.parent.position;
-        if(controlsPersp && currentSelection) controlsPersp.target = currentSelection.parent.position;
+		
+		_this.setOrbitTarget( );
 
         if(!cameraOrtho)
             cameraOrtho = new THREE.OrthographicCamera( canvas_width / - 2, canvas_width / 2, canvas_height / 2, canvas_height / - 2, 1, 2000 );
@@ -195,6 +221,7 @@ var Editor = (function()
         }
 
         camera.lookAt(new THREE.Vector3(0,0,0));
+        _this.setTransformControls( camera );
     };
 
     Editor.prototype.addLights = function ( )
@@ -214,34 +241,83 @@ var Editor = (function()
         scene.add( boundingBox );
     };
 
+    Editor.prototype.addGridHelper = function ( mesh )
+    {
+		scene.add( new THREE.GridHelper( 1000, 10 ) );
+    };
+
+    Editor.prototype.onTransformKeysDown = function ( event )
+    {				
+		switch ( event.keyCode ) 
+		{
+			case 81: // Q
+				transform_controls.setSpace( transform_controls.space === "local" ? "world" : "local" );
+				break;
+			case 17: // Ctrl
+				transform_controls.setTranslationSnap( 100 );
+				transform_controls.setRotationSnap( THREE.Math.degToRad( 15 ) );
+				break;
+			case 84: // T
+				transform_controls.setMode( "translate" );
+				break;
+			case 83: // S
+				transform_controls.setMode( "scale" );
+				break;
+			case 82: // R
+				transform_controls.setMode( "rotate" );
+				break;
+			case 187:
+			case 107: // +, =, num+
+				transform_controls.setSize( transform_controls.size + 0.1 );
+				break;
+			case 189:
+			case 109: // -, _, num-
+				transform_controls.setSize( Math.max( transform_controls.size - 0.1, 0.1 ) );
+				break;
+		}
+    };
+	
+    Editor.prototype.onTransformKeysUp = function ( event )
+    {
+		switch ( event.keyCode ) 
+		{
+			case 17: // Ctrl
+				transform_controls.setTranslationSnap( null );
+				transform_controls.setRotationSnap( null );
+				break;
+		}		
+	};
+
     Editor.prototype.addListeners = function ( )
     {
         canvas_container.addEventListener( 'mousemove', _this.onDocumentMouseMove, false );
         canvas_container.addEventListener( 'mousedown', _this.onMouseDown, false );
-        canvas_container.addEventListener( 'mouseup', _this.onMouseUp, false );
+        canvas_container.addEventListener( 'mouseup',   _this.onMouseUp, false );
         //document.body.addEventListener( 'mousewheel', _this.onMousewheel, false );
         //document.body.addEventListener( 'DOMMouseScroll',_this.onMousewheel, false ); // firefox
-        window.addEventListener( 'resize', _this.onWindowResize, false );
+        window.addEventListener( 'resize',  _this.onWindowResize, false );
+		window.addEventListener( 'keydown', _this.onTransformKeysDown );
+		window.addEventListener( 'keyup',   _this.onTransformKeysUp );
     };
 
     Editor.prototype.meshClicked = function(mesh)
     {
-        if (currentSelection === mesh)
-        {
-            currentSelection = null;
-            scene.remove(boundingBox);
-        }
-        else
+        if ( currentSelection !== mesh )
         {
             currentSelection = mesh;
-            _this.addBoundingBox(currentSelection);
-
-            //controlsOrtho.target = currentSelection.parent.position;
-            //controlsPersp.target = currentSelection.parent.position;
+            //_this.addBoundingBox( currentSelection );
         }
 
-        _this.setupCamera(currentView);
+        _this.setupCamera( currentView );
     };
+
+    Editor.prototype.resetSelection = function( )
+    {
+		currentSelection = null;
+		scene.remove( boundingBox );
+		transform_controls.detach( );
+		_this.removeOrbitTarget( );
+	};
 
     Editor.prototype.checkClickedMesh = function( event )
     {
@@ -258,9 +334,9 @@ var Editor = (function()
         var intersects = raycaster.intersectObjects( objects );
 
         if ( intersects.length > 0 )
-        {
             _this.meshClicked( intersects[0].object );
-        }
+		else
+			_this.resetSelection( );
     };
 
     Editor.prototype.onMouseDown = function(evt)
@@ -276,6 +352,7 @@ var Editor = (function()
                 break;
             case 2: // right
                 mouseRightClicked = true;
+				_this.removeOrbitTarget();
                 break;
         }
     }

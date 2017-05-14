@@ -12,20 +12,21 @@ var GUIManager = (function ()
 
     GUIManager.prototype = Object.create(Object.prototype);
     GUIManager.prototype.constructor = GUIManager;
-	
-    GUIManager.prototype.redirect = function ( url, e )
+
+    GUIManager.prototype.changeCameraView = function ( )
     {
-        window.location.href = url;
+        settings.editor.setupCamera( $( this ).find("option:selected").val().toLowerCase() );
     };
-	
+
     GUIManager.prototype.addListeners = function ()
     {
-        $( "#goToEditor" ).click( this.redirect.bind( this, "views/editors/") );
-        $( "#goToSimulations" ).click( this.redirect.bind( this, "views/simultaions.html") );
+        $( "#selectView" ).change( this.changeCameraView );
     };
 
     return GUIManager;
 
 })();
 
-var GUI = new GUIManager(); 
+var GUI = new GUIManager({
+    editor: editor
+});

@@ -15,13 +15,14 @@ var GUIManager = (function ()
 	
     GUIManager.prototype.redirect = function ( url, e )
     {
-        window.location.href = url;
+		var purpose = $( e.target ).attr("id").replace("goTo","").toLowerCase();
+        window.location.href = url + "?purpose=" + purpose;
     };
 	
     GUIManager.prototype.addListeners = function ()
     {
-        $( "#goToEditor" ).click( this.redirect.bind( this, "views/editors/") );
-        $( "#goToSimulations" ).click( this.redirect.bind( this, "views/simultaions.html") );
+        $( "#goToShipEditor, #goToEnginesEditor, #goToWeaponsEditor, #goToFieldObjsEditor, #goToFieldsEditor" ).click( this.redirect.bind( this, "models_editor.html") );
+        $( "#goToInterfacesEditor" ).click( this.redirect.bind( this, "interfaces_editor.html") );
     };
 
     return GUIManager;
