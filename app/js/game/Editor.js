@@ -117,14 +117,6 @@ var Editor = (function()
         renderer.setSize( canvas_width, canvas_height );
     };
 
-    Editor.prototype.setControls = function ( actualCamera )
-    {
-        controls = new THREE.OrbitControls( actualCamera, renderer.domElement );
-        controls.enableKeys = false;
-        controls.dampingFactor = 0.25;
-        controls.enableZoom = true;
-    };
-
     Editor.prototype.setOrthoControls = function ( )
     {
         controlsOrtho = new THREE.OrbitControls( cameraOrtho, renderer.domElement );
@@ -132,6 +124,8 @@ var Editor = (function()
         controlsOrtho.dampingFactor = 0.25;
         controlsOrtho.enableZoom = true;
         controlsOrtho.enableRotate = false;
+        controlsOrtho.minDistance   = -1000;
+		controlsOrtho.mouseButtons  = { ORBIT: THREE.MOUSE.MIDDLE, ZOOM: null, PAN: THREE.MOUSE.RIGHT };
     };
 
     Editor.prototype.setPerspControls = function ( )
@@ -141,6 +135,8 @@ var Editor = (function()
         controlsPersp.dampingFactor = 0.25;
         controlsPersp.enableZoom = true;
         controlsPersp.enableRotate = true;
+        controlsPersp.minDistance   = -1000;
+		controlsPersp.mouseButtons  = { ORBIT: THREE.MOUSE.MIDDLE, ZOOM: null, PAN: THREE.MOUSE.RIGHT };
     };
 
     Editor.prototype.createScene = function ( )
@@ -240,29 +236,30 @@ var Editor = (function()
             currentSelection = mesh;
             _this.addBoundingBox(currentSelection);
 
-            controlsOrtho.target = currentSelection.parent.position;
-            controlsPersp.target = currentSelection.parent.position;
+            //controlsOrtho.target = currentSelection.parent.position;
+            //controlsPersp.target = currentSelection.parent.position;
         }
 
         _this.setupCamera(currentView);
     };
 
-    Editor.prototype.checkClickedMesh = function(event)
+    Editor.prototype.checkClickedMesh = function( event )
     {
         event.preventDefault();
 
-        var raycaster = new THREE.Raycaster();
-        var mouse = new THREE.Vector2();
+        var coords    = Utils.getLocalCoords( canvas_container, Utils.getEventCoords( event ) ),
+		    raycaster = new THREE.Raycaster(),
+		    mouse     = new THREE.Vector2();
 
-        mouse.x = ( event.clientX / canvas_width ) * 2 - 1;
-        mouse.y = - ( event.clientY / canvas_height ) * 2 + 1;
+        mouse.x = ( coords.x / canvas_width ) * 2 - 1;
+        mouse.y = - ( coords.y / canvas_height ) * 2 + 1;
 
         raycaster.setFromCamera( mouse, camera );
         var intersects = raycaster.intersectObjects( objects );
 
         if ( intersects.length > 0 )
         {
-            _this.meshClicked(intersects[0].object);
+            _this.meshClicked( intersects[0].object );
         }
     };
 

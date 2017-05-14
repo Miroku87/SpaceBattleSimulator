@@ -17,7 +17,7 @@ body {
 	overflow: hidden;
 }
 #container .col-3 {
-	padding: 10px;
+	padding: 0 10px 10px 10px;
 	overflow: hidden;
 }
 #container .col-3 .row {
@@ -27,4 +27,5 @@ body {
 
 #gui .row {
 	border-bottom: 1px solid rgba(0,0,0,.15);
+	padding: 10px 0 20px 0;
 }

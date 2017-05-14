@@ -31,8 +31,10 @@ module.exports = function (grunt)
 			dev: {
 				files : [
 					{ src : [ '**' ], cwd: './app', expand : true, dest : './dist/', nonull: true },
-					{ src : [ '**', '!loaders' ], cwd: './lib', dest : './dist/js/', expand : true, nonull: true },
-					{ src : [ 'ColladaLoader.js' ], cwd: './lib/loaders', dest : './dist/js/threejs', expand : true, nonull: true },
+					{ src : [ 'jquery.min.js' ], cwd: './node_modules/jquery/dist', dest : './dist/js/jquery', expand : true, nonull: true },
+					{ src : [ 'three.min.js' ], cwd: './node_modules/three/build', dest : './dist/js/threejs', expand : true, nonull: true },
+					{ src : [ 'ColladaLoader.js' ], cwd: './node_modules/three/examples/js/loaders', dest : './dist/js/threejs', expand : true, nonull: true },
+					{ src : [ '**', '!DeviceOrientationControls.js', '!FirstPersonControls.js', '!VRControls.js', ], cwd: './node_modules/three/examples/js/controls', dest : './dist/js/threejs', expand : true, nonull: true },
 					{ src : [ '**' ], cwd: './assets', dest : './dist/assets/', expand : true, nonull: true },
 					{ src : [ '*.min.*' ], cwd: './node_modules/bootstrap/dist/js', dest : './dist/js/bootstrap/', expand : true, nonull: true },
 					{ src : [ '*.min.*' ], cwd: './node_modules/bootstrap/dist/css', dest : './dist/styles/', expand : true, nonull: true },
